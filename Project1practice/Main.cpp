@@ -44,12 +44,27 @@ String TileMap[Height] = {
 //Inheritance
 class Player :public sprites{
 
-
+private:
+    int x;
+    int y;
+    int ti;
+   
 public:
+    int newx = 0; 
+    int newy = 0;
     float frame = 0;
-    int x = 9, y = 15;
-    int newx = 0, newy = 0;
-    int rotate = 1, ti = 0;
+    Player() {
+        x = 9;
+        y = 15;
+        ti = 0;
+    }
+    int getx() {
+        return x;
+    }
+    int gety() {
+        return y;
+    }
+    int rotate = 1;
     public:
     void update() {
         frame = frame + 0.01;
@@ -109,10 +124,15 @@ public:
 };
 
 class Enemy:public sprites  {
+private:
+    int ti;
 public:
+    Enemy() {
+        ti = 0;
+    }
     int x[4] = { 1, 17, 1, 17 }, y[4] = { 1, 1, 19, 19 };
     int newx[4] = { 0,0 ,0 , 0 }, newy[4] = { 0,0, 0, 0 };
-    int rotate[4] = { 1,1,1,1 }, ti = 0;
+    int rotate[4] = { 1,1,1,1 };
 
     void update() {
         ti++;
@@ -183,6 +203,9 @@ public:
     }
     
 };
+
+
+
 int main()
 {
     srand(time((0)));
@@ -215,8 +238,8 @@ int main()
 
             if (q < 171 && life)
                 if (event.type == Event::KeyPressed) {
-                    p.newx = p.x;
-                    p.newy = p.y;
+                    p.newx = p.getx();
+                    p.newy = p.gety();
                     if (event.key.code == Keyboard::Right)
                         p.rotate = 1;
                     if (event.key.code == Keyboard::Left)
