@@ -1,8 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include <time.h>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
-#include<cmath>
+
 
 using namespace sf;
 const int Height = 21;
@@ -15,6 +14,7 @@ bool life = true;
 class sprites {
 public:
     //Pure Virtual Function
+    //RuntimePolymorphism
     virtual void update() = 0;
 };
 //map generation
@@ -41,12 +41,13 @@ String TileMap[Height] = {
 "A3               4A",
 "AAAAAAAAAAAAAAAAAAA",
 };
-//Inheritance
+//Hierarchial Inheritance
 class Player :public sprites{
 
 private:
     int x;
     int y;
+    //to slow pacman movement
     int ti;
    
 public:
@@ -71,10 +72,13 @@ public:
         if (frame > 5.0)
             frame = frame - 5.0;
         ti++;
+        //for the movement of pacman
         if (ti >= 300) {
             switch (rotate)
             {
+
             case 1:
+                //checking collision with the block
                 if (TileMap[y][newx + 1] != 'A')
                     newx += 1;
                 break;
@@ -94,21 +98,26 @@ public:
             }
             ti = 0;
         }
+        //after moving new position of pacman
         if (TileMap[newy][newx] == ' ' || TileMap[newy][newx] == 'B') {
+            //To count the number of pellets eaten
             if (TileMap[newy][newx] == ' ')
                 q++;
+            //collision with the ghost
             if (TileMap[newy][newx] == '1' || TileMap[newy][newx] == '2' ||
                 TileMap[newy][newx] == '3' || TileMap[newy][newx] == '4')
                 life = false;
+
             TileMap[y][x] = 'B';
             TileMap[newy][newx] = 'C';
+            //updating the position
             x = newx;
             y = newy;
 
 
 
         }
-
+        //left tunnel bata enter garera right bata exit
         if (newy == 9 && (newx == 0 || newx == 18)) {
             if (newx == 0)
                 newx = 17;
@@ -141,9 +150,11 @@ public:
                 rotate[i] = rand() % 4 + 1;
                 newx[i] = x[i];
                 newy[i] = y[i];
+                //movement of ghost
                 switch (rotate[i])
                 {
                 case 1:
+                    //checking collison with the block
                     if (TileMap[y[i]][newx[i] + 1] != 'A')
                         newx[i] += 1;
                     break;
@@ -167,8 +178,10 @@ public:
             if (TileMap[newy[i]][newx[i]] == ' ' || TileMap[newy[i]][newx[i]] == 'B'||TileMap[newy[i]][newx[i]]=='C') {
                 if (TileMap[newy[i]][newx[i]] == 'B')
                     TileMap[y[i]][x[i]] = 'B';
+                //ghosts do not eat pellets
                 else if (TileMap[newy[i]][newx[i]] == ' ')
                     TileMap[y[i]][x[i]] = ' ';
+                //collision with pacman
                 else if (TileMap[newy[i]][newx[i]] == 'C')
                     life = false;
                 if (i == 0)
@@ -263,7 +276,7 @@ int main()
             upd->update();
         }
         window.clear(sf::Color::Black);
-
+        //map
         for (int i = 0; i < Height; i++)
              for (int j = 0; j < Width; j++)
             {
@@ -293,7 +306,7 @@ int main()
                 window.draw(sprite);
 
             }
-        
+        //checks whether you win or loose
         if (q == 171)
             window.draw(youwin);
         if (!life)
