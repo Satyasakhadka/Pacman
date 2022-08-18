@@ -11,6 +11,12 @@ const int ts = 25;
 
 int q = 0;
 bool life = true;
+//Abstract Class
+class sprites {
+public:
+    //Pure Virtual Function
+    virtual void update() = 0;
+};
 //map generation
 String TileMap[Height] = {
 "AAAAAAAAAAAAAAAAAAA",
@@ -35,14 +41,16 @@ String TileMap[Height] = {
 "A3               4A",
 "AAAAAAAAAAAAAAAAAAA",
 };
-class Player {
+//Inheritance
+class Player :public sprites{
+
+
 public:
-
-
     float frame = 0;
     int x = 9, y = 15;
     int newx = 0, newy = 0;
     int rotate = 1, ti = 0;
+    public:
     void update() {
         frame = frame + 0.01;
         if (frame > 5.0)
@@ -85,6 +93,7 @@ public:
 
 
         }
+
         if (newy == 9 && (newx == 0 || newx == 18)) {
             if (newx == 0)
                 newx = 17;
@@ -99,7 +108,7 @@ public:
 
 };
 
-class Enemy {
+class Enemy:public sprites  {
 public:
     int x[4] = { 1, 17, 1, 17 }, y[4] = { 1, 1, 19, 19 };
     int newx[4] = { 0,0 ,0 , 0 }, newy[4] = { 0,0, 0, 0 };
@@ -189,7 +198,8 @@ int main()
     yl.loadFromFile("youlose.png");
     Sprite youlose(yl);
     youlose.setPosition(100, 210);
-
+    //Pointer to abstract base class
+    sprites *upd;
     Player p;
     Enemy en;
     while (window.isOpen())
@@ -220,8 +230,14 @@ int main()
 
         }
         if (q < 171 && life) {
-            p.update();
-            en.update();
+            //Assign the adress of derived class object to base class pointer
+            upd = &p;
+            //update of player class is called
+            upd->update();
+            //Assign the adress of derived class object to base class pointer
+            upd = &en;
+            //update of player class is called
+            upd->update();
         }
         window.clear(sf::Color::Black);
 
